@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Battle Game</title>
+    <style>
+        /* Glowing background animation */
+        @keyframes glowingBackground {
+            0% { background-color: #ff7f7f; }
+            50% { background-color: #7fff7f; }
+            100% { background-color: #7f7fff; }
+        }
+
+        /* Glowing effect for elements */
+        @keyframes glowing {
+            0% { box-shadow: 0 0 10px #ff7f7f, 0 0 20px #ff7f7f, 0 0 30px #ff7f7f; }
+            50% { box-shadow: 0 0 20px #7fff7f, 0 0 40px #7fff7f, 0 0 60px #7fff7f; }
+            100% { box-shadow: 0 0 30px #7f7fff, 0 0 60px #7f7fff, 0 0 90px #7f7fff; }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            background-image: linear-gradient(45deg, #ff7f7f, #7fff7f, #7f7fff);
+            background-size: 400% 400%;
+            animation: glowingBackground 10s ease infinite;
+            padding: 50px;
+        }
+
+        .battle-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .player, .enemy {
+            width: 150px;
+            height: 150px;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for better contrast */
+        }
+
+        .player {
+            border: 2px solid #ff7f7f;
+            animation: glowing 1s ease-out infinite;
+        }
+
+        .enemy {
+            border: 2px solid #7fff7f;
+            animation: glowing 1.5s ease-out infinite; /* Slightly slower glow for the enemy */
+        }
+
+        .health {
+            font-size: 1.5em;
+        }
+
+        input {
+            padding: 12px;
+            font-size: 1.2em;
+            margin: 15px;
+            border-radius: 5px;
+            border: 2px solid #ccc;
+            transition: all 0.3s ease;
+        }
+
+        /* Glowing effect on focus */
+        input:focus {
+            box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.5);
+            outline: none;
+            border-color: #ff7f7f; /* Red border when focused */
+        }
+
+        /* Submit button with glowing and hover effects */
+        button {
+            padding: 12px 24px;
+            font-size: 1.3em;
+            cursor: pointer;
+            background-color: #c7a21e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            margin: 15px;
+            transition: all 0.3s ease;
+        }
+
+        /* Glowing effect on hover */
+        button:hover {
+            background-color: #45a049;
+            box-shadow: 0 0 20px 5px #4CAF50, 0 0 25px 5px rgba(0, 255, 0, 0.7);
+        }
+
+        .glowing {
+            animation: glowing 1s ease-out infinite;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff7f7f;
+            border-radius: 50%;
+            animation: particleMovement 1.5s ease-out infinite;
+        }
+
+        @keyframes particleMovement {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(100px, 100px); opacity: 0; } /* Adjust particle movement */
+        }
+    </style>
+</head>
+<body>
+    <h1>Math Battle Game</h1>
+    <div class="battle-container">
+        <div class="player" id="player">
+            <p>Your Health: <span id="playerHealth">100</span></p>
+        </div>
+        <div class="enemy" id="enemy">
+            <p>Enemy Health: <span id="enemyHealth">100</span></p>
+        </div>
+    </div>
+    <p id="question"></p>
+    <input type="number" id="userAnswer" placeholder="Enter your answer">
+    <button onclick="checkAnswer()">Submit Answer</button>
+    <p id="message"></p>
+
+    <script>
+        let playerHealth = 100;
+        let enemyHealth = 100;
+        let currentQuestion = {};
+
+        // Function to generate random math question
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const operators = ['+', '-', '*', '/'];
+            const operator = operators[Math.floor(Math.random() * 4)];
+
+            let correctAnswer;
+            switch (operator) {
+                case '+':
+                    correctAnswer = num1 + num2;
+                    break;
+                case '-':
+                    correctAnswer = num1 - num2;
+                    break;
+                case '*':
+                    correctAnswer = num1 * num2;
+                    break;
+                case '/':
+                    correctAnswer = (num1 / num2).toFixed(2);
+                    break;
+            }
+            
+            currentQuestion = { num1, num2, operator, correctAnswer };
+            document.getElementById('question').textContent = `What is ${num1} ${operator} ${num2}?`;
+        }
+
+        // Function to check the user's answer
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById("userAnswer").value);
+            const correctAnswer = parseFloat(currentQuestion.correctAnswer);
+            let message = "";
+
+            if (userAnswer === correctAnswer) {
+                message = "Correct! You attack the enemy.";
+                enemyHealth -= 10;
+                document.getElementById("enemy").classList.add("glowing");
+                createParticleEffect('enemy');
+                setTimeout(() => document.getElementById("enemy").classList.remove("glowing"), 1000);
+            } else {
+                message = "Incorrect! The enemy attacks you.";
+                playerHealth -= 10;
+                document.getElementById("player").classList.add("glowing");
+                createParticleEffect('player');
+                setTimeout(() => document.getElementById("player").classList.remove("glowing"), 1000);
+            }
+
+            // Update the health display
+            document.getElementById("playerHealth").textContent = playerHealth;
+            document.getElementById("enemyHealth").textContent = enemyHealth;
+
+            // Check for end of game conditions
+            if (enemyHealth <= 0) {
+                message = "You win the battle!";
+                resetGame();
+            } else if (playerHealth <= 0) {
+                message = "You lost the battle!";
+                resetGame();
+            }
+
+            document.getElementById("message").textContent = message;
+            generateQuestion(); // Generate next question
+        }
+
+        // Function to create random particle effects
+        function createParticleEffect(target) {
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+            document.body.appendChild(particle);
+
+            const targetElement = document.getElementById(target);
+            const rect = targetElement.getBoundingClientRect();
+
+            // Set particle position to target element's position
+            particle.style.left = rect.left + rect.width / 2 + 'px';
+            particle.style.top = rect.top + rect.height / 2 + 'px';
+
+            // Remove particle after animation
+            setTimeout(() => particle.remove(), 1500);
+        }
+
+        // Function to reset the game
+        function resetGame() {
+            playerHealth = 100;
+            enemyHealth = 100;
+            document.getElementById("playerHealth").textContent = playerHealth;
+            document.getElementById("enemyHealth").textContent = enemyHealth;
+            document.getElementById("message").textContent = "";
+            generateQuestion(); // Generate first question
+        }
+
+        // Start the game
+        generateQuestion();
+    </script>
+</body>
+</html>

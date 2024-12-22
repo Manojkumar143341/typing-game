@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Game</title>
+    <style>
+        /* Global Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            color: #fff;
+            overflow: hidden;
+            background: radial-gradient(circle, rgba(189, 104, 18, 0.6), rgb(177, 133, 11));
+        }
+        .game-container {
+            background-color: #1c1c1c;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(227, 75, 4, 0.5), 0 0 25px rgba(196, 45, 4, 0.4), 0 0 35px rgba(220, 115, 2, 0.3);
+            text-align: center;
+            width: 350px;
+            animation: glowing 1.5s infinite alternate;
+        }
+
+        /* Neon Glow Animation */
+        @keyframes glowing {
+            0% { box-shadow: 0 0 5px #049312, 0 0 10px #25a112, 0 0 15px #00ff44; }
+            50% { box-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 50px #ff00ff; }
+            100% { box-shadow: 0 0 5px #270fbe, 0 0 10px #130960, 0 0 15px #0b0e7e; }
+        }
+
+        /* Styling for the text to type */
+        #text-to-type {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #b1af11;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+        }
+
+        /* Styling for the user input */
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 4px;
+            border: none;
+            outline: none;
+            color: #ff00ff;
+            background-color: #2a2a2a;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        /* Input focus effect */
+        #user-input:focus {
+            box-shadow: 0 0 15px #ff00ff, 0 0 25px #ff00ff;
+        }
+
+        /* Timer and score styling */
+        #timer, #score {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #fff;
+        }
+
+        /* Previous Score Table */
+        #previous-score {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #ff00ff;
+        }
+
+        /* Message styling */
+        #message {
+            margin-top: 20px;
+            font-size: 1.3em;
+            color: #00ff00;
+        }
+
+        /* Restart Button Styling */
+        #restart-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff00ff;
+            color: white;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        /* Hover effect for the restart button */
+        #restart-button:hover {
+            background-color: #00ff44;
+            transform: scale(1.1);
+        }
+
+        /* Start Button Styling */
+        #start-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff00ff;
+            color: white;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        /* Hover effect for the start button */
+        #start-button:hover {
+            background-color: #00ff44;
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Typing Game</h1>
+        <p>Type the following text as fast as you can:</p>
+        <div id="text-to-type"></div>
+        <input type="text" id="user-input" placeholder="Start typing..." autofocus disabled />
+        <div id="timer">Time Left: <span id="time">30</span>s</div>
+        <div id="score">Score: 0</div>
+        <div id="previous-score">Previous Score: 0</div> <!-- Display previous score -->
+        <div id="message"></div>
+        <center>
+        <button id="start-button">Start Game</button> <!-- Start button -->
+        <button id="restart-button" style="display: none;">Restart Game</button> <!-- Initially hidden -->
+        </center>
+    </div>
+
+    <script>
+        let timeLeft = 30;
+        let score = 0;
+        let textToType = '';
+        let timer;
+        let gameStarted = false;
+
+        const textElement = document.getElementById('text-to-type');
+        const inputElement = document.getElementById('user-input');
+        const timerElement = document.getElementById('time');
+        const scoreElement = document.getElementById('score');
+        const previousScoreElement = document.getElementById('previous-score');
+        const messageElement = document.getElementById('message');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const wordsAndParagraphs = [
+            "apple", "grape", "orange", "pineapple", "strawberry", "watermelon", 
+            "The quick brown fox jumps over the lazy dog.",
+            "To be or not to be, that is the question.",
+            "In the beginning God created the heavens and the earth.",
+            "All that glitters is not gold." ,"A bad workman always blames his tools.","A cat has nine lives.",
+            "Action speaks louder than words.", "blueberry", "kiwi", "peach", "mango"
+        ];
+
+        // Retrieve previous score from localStorage if it exists
+        let previousScore = localStorage.getItem('previousScore') || 0;
+        previousScoreElement.textContent = `Previous Score: ${previousScore}`;
+
+        // Start the game
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            scoreElement.textContent = `Score: ${score}`;
+            timerElement.textContent = `Time Left: ${timeLeft}s`;
+
+            // Get a random text (word or paragraph) to type
+            textToType = wordsAndParagraphs[Math.floor(Math.random() * wordsAndParagraphs.length)];
+            textElement.textContent = textToType;
+
+            // Clear the input field
+            inputElement.value = '';
+            inputElement.focus();
+
+            // Start the timer
+            timer = setInterval(updateTimer, 1000);
+
+            // Show restart button once the game ends
+            restartButton.style.display = "none"; // Hide restart button when the game starts
+            inputElement.disabled = false; // Enable input when the game starts
+            startButton.style.display = "none"; // Hide start button when the game starts
+            messageElement.textContent = ''; // Clear message
+        }
+
+        // Update timer
+        function updateTimer() {
+            timeLeft--;
+            timerElement.textContent = `Time Left: ${timeLeft}s`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                messageElement.textContent = `Game Over! Your score is ${score}`;
+
+                // Save current score as previous score if it's higher
+                if (score > previousScore) {
+                    localStorage.setItem('previousScore', score);
+                    previousScore = score; // Update previous score in the current session
+                    previousScoreElement.textContent = `Previous Score: ${previousScore}`;
+                }
+
+                inputElement.disabled = true; // Disable input after game ends
+                restartButton.style.display = "block"; // Show the restart button
+            }
+        }
+
+        // Check user input
+        inputElement.addEventListener('input', () => {
+            if (inputElement.value === textToType) {
+                score++;
+                scoreElement.textContent = `Score: ${score}`;
+
+                // Get a new word or paragraph to type
+                textToType = wordsAndParagraphs[Math.floor(Math.random() * wordsAndParagraphs.length)];
+                textElement.textContent = textToType;
+
+                // Clear the input field for the next text
+                inputElement.value = '';
+            }
+        });
+
+        // Restart the game when the restart button is clicked
+        restartButton.addEventListener('click', () => {
+            startGame(); // Start a new game
+        });
+
+        // Start the game when the start button is clicked
+        startButton.addEventListener('click', () => {
+            startGame(); // Start the game
+        });
+
+        // Initialize game on page load
+        window.onload = () => {
+            startButton.style.display = "block"; // Show start button initially
+        };
+    </script>
+
+</body>
+</html>

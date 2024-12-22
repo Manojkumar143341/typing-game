@@ -1,0 +1,457 @@
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Quiz Game</title>
+    <style>
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(45deg, #ff6f61, #ffcc00, #00ff99, #007bff);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Gradient Animation */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Title Styling */
+        h1 {
+            color: #4CAF50;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            margin-bottom: 20px;
+        }
+
+        /* Timer Styling */
+        .timer {
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #FF0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+        }
+
+        /* Score Styling */
+        .score {
+            font-size: 18px;
+            color: #FF4500;
+            margin-top: 20px;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
+        }
+
+        /* Question Styling */
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Option Button Styling */
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options li {
+            margin: 10px;
+            font-size: 18px;
+        }
+
+        /* Dynamic Glowing Effect for Buttons */
+        .options button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: glowAnimation 2s infinite alternate;
+        }
+
+        /* Dynamic Glowing Animation */
+        @keyframes glowAnimation {
+            0% {
+                box-shadow: 0 0 15px #d48383, 0 0 30px #d79393, 0 0 45px #ff4d4d;
+                background-color: #ff6f61;
+            }
+            10% {
+                box-shadow: 0 0 15px #ffcc00, 0 0 30px #ffcc00, 0 0 45px #ffcc00;
+                background-color: #ffcc00;
+            }
+            20% {
+                box-shadow: 0 0 15px #00ff99, 0 0 30px #00ff99, 0 0 45px #00ff99;
+                background-color: #00ff99;
+            }
+            40% {
+                box-shadow: 0 0 15px #007bff, 0 0 30px #007bff, 0 0 45px #007bff;
+                background-color: #007bff;
+            }
+            50% {
+                box-shadow: 0 0 15px #800080, 0 0 30px #800080, 0 0 45px #800080;
+                background-color: #800080;
+            }
+        }
+
+        /* Button Hover Effects */
+        .options button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 1);
+        }
+
+        /* Button Active Effects */
+        button:active {
+            transform: scale(0.9);
+        }
+
+        /* Result Styling */
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        /* Timer Styling */
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF6347;
+        }
+
+        /* Glow effect */
+        .glow {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(0, 255, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="glow">Technical Quiz Game</h1>
+    <div class="timer" id="timer">Time: 30</div>
+    <div class="score" id="score">Score: 0</div>
+
+    <div id="quiz-container">
+        <div class="question" id="question"></div>
+        <ul class="options" id="options"></ul>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        const questions = [
+        {
+                question: "What does HTML stand for?",
+                options: ["A. HyperText Markup Language", "B. HomeText Markup Language", "C. HyperText Machine Language", "D. HyperTool Markup Language"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which HTML tag is used to display an image?",
+                options: ["A. <image>", "B. <img>", "C. <picture>", "D. <src>"],
+                correctAnswer: "B"
+            },
+
+            // CSS Questions
+            {
+                question: "What does CSS stand for?",
+                options: ["A. Colorful Style Sheets", "B. Cascading Style Sheets", "C. Creative Style Sheets", "D. Custom Style Sheets"],
+                correctAnswer: "B"
+            },
+            {
+                question: "Which CSS property is used to change the text color?",
+                options: ["A. color", "B. font-color", "C. text-color", "D. background-color"],
+                correctAnswer: "A"
+            },
+
+            // JavaScript Questions
+            {
+                question: "Which JavaScript method is used to write text to the console?",
+                options: ["A. print()", "B. console.write()", "C. console.log()", "D. log.console()"],
+                correctAnswer: "C"
+            },
+            {
+                question: "Which of these is a valid JavaScript variable name?",
+                options: ["A. myVar", "B. _myVar", "C. my-var", "D. $myVar"],
+                correctAnswer: "C"
+            },
+
+            // Python Questions
+            {
+                question: "Which of the following is used to define a function in Python?",
+                options: ["A. def myFunction()", "B. function myFunction()", "C. func myFunction()", "D. function: myFunction()"],
+                correctAnswer: "A"
+            },
+            {
+                question: "What is the output of the following Python code: print(3 ** 2)?",
+                options: ["A. 5", "B. 6", "C. 9", "D. 8"],
+                correctAnswer: "C"
+            },
+               // HTML Questions
+               {
+                question: "What does HTML stand for?",
+                options: ["A. HyperText Markup Language", "B. HomeText Markup Language", "C. HyperText Machine Language", "D. HyperTool Markup Language"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which HTML tag is used to display an image?",
+                options: ["A. <image>", "B. <img>", "C. <picture>", "D. <src>"],
+                correctAnswer: "B"
+            },
+
+            // CSS Questions
+            {
+                question: "What does CSS stand for?",
+                options: ["A. Colorful Style Sheets", "B. Cascading Style Sheets", "C. Creative Style Sheets", "D. Custom Style Sheets"],
+                correctAnswer: "B"
+            },
+            {
+                question: "Which CSS property is used to change the text color?",
+                options: ["A. color", "B. font-color", "C. text-color", "D. background-color"],
+                correctAnswer: "A"
+            },
+
+            // JavaScript Questions
+            {
+                question: "Which JavaScript method is used to write text to the console?",
+                options: ["A. print()", "B. console.write()", "C. console.log()", "D. log.console()"],
+                correctAnswer: "C"
+            },
+            {
+                question: "Which of these is a valid JavaScript variable name?",
+                options: ["A. myVar", "B. _myVar", "C. my-var", "D. $myVar"],
+                correctAnswer: "C"
+            },
+
+            // Python Questions
+            {
+                question: "Which of the following is used to define a function in Python?",
+                options: ["A. def myFunction()", "B. function myFunction()", "C. func myFunction()", "D. function: myFunction()"],
+                correctAnswer: "A"
+            },
+            {
+                question: "What is the output of the following Python code: print(3 ** 2)?",
+                options: ["A. 5", "B. 6", "C. 9", "D. 8"],
+                correctAnswer: "C"
+            },
+            {
+                question: "Which of the following is a valid Python data type?",
+                options: ["A. int", "B. float", "C. str", "D. All of the above"],
+                correctAnswer: "D"
+            },
+            {
+                question: "In Python, which operator is used for exponentiation?",
+                options: ["A. **", "B. ^", "C. //", "D. %"],
+                correctAnswer: "A"
+            },
+            {
+                question: "What will be the result of the following Python expression: 5 // 2?",
+                options: ["A. 2", "B. 2.5", "C. 3", "D. 4"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which Python library is commonly used for data manipulation and analysis?",
+                options: ["A. Matplotlib", "B. NumPy", "C. Pandas", "D. Requests"],
+                correctAnswer: "C"
+            },
+
+            // Java Questions
+            {
+                question: "Which keyword is used to define a class in Java?",
+                options: ["A. class", "B. define", "C. object", "D. function"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which of the following is the correct syntax for a main method in Java?",
+                options: ["A. public static void main(String[] args)", "B. public void main(String args[])", "C. main(String args[])", "D. static void main(String args[])"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which of these is NOT a valid Java data type?",
+                options: ["A. int", "B. float", "C. double", "D. character"],
+                correctAnswer: "D"
+            },
+            {
+                question: "What is the correct syntax for creating a new object in Java?",
+                options: ["A. object = new Object();", "B. Object object = new Object();", "C. object new Object();", "D. new Object = object();"],
+                correctAnswer: "B"
+            },
+            {
+                question: "Which of these is a valid Java operator?",
+                options: ["A. &&", "B. //", "C. !=", "D. ??"],
+                correctAnswer: "C"
+            },
+            {
+                question: "In Java, which method is used to find the length of a string?",
+                options: ["A. length()", "B. getLength()", "C. size()", "D. count()"],
+                correctAnswer: "A"
+            },
+
+            // More Technical Questions
+            {
+                question: "Which tag is used to define a table in HTML?",
+                options: ["A. <table>", "B. <td>", "C. <tr>", "D. <th>"],
+                correctAnswer: "A"
+            },
+            {
+                question: "What does SQL stand for?",
+                options: ["A. Structured Query Language", "B. Simple Query Language", "C. Structured Question Language", "D. Simple Query List"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which of these is used to define a JavaScript function?",
+                options: ["A. function myFunction()", "B. def myFunction()", "C. func myFunction()", "D. function: myFunction()"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which of the following is used to create a new list in Python?",
+                options: ["A. []", "B. {}", "C. ()", "D. <>"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which Python statement is used to handle exceptions?",
+                options: ["A. try...except", "B. try...catch", "C. try...finally", "D. except...catch"],
+                correctAnswer: "A"
+            },
+
+            // More Python and Java Questions
+            {
+                question: "Which Java class is used to read input from the user?",
+                options: ["A. Scanner", "B. Reader", "C. InputStream", "D. Console"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Which of the following is a valid Java interface?",
+                options: ["A. Comparable", "B. Comparator", "C. Iterable", "D. All of the above"],
+                correctAnswer: "D"
+            },
+            {
+                question: "Which of the following is the correct way to write a comment in Python?",
+                options: ["A. # This is a comment", "B. // This is a comment", "C. /* This is a comment */", "D. <!-- This is a comment -->"],
+                correctAnswer: "A"
+            },
+            {
+                question: "What is the default value of a boolean variable in Java?",
+                options: ["A. true", "B. false", "C. 0", "D. null"],
+                correctAnswer: "B"
+            },
+            {
+                question: "In Python, which function is used to get the length of a list?",
+                options: ["A. length()", "B. size()", "C. len()", "D. count()"],
+                correctAnswer: "C"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer = 30;
+        let timerInterval;
+
+        // Load question and options
+        function loadQuestion() {
+            const questionElement = document.getElementById("question");
+            const optionsElement = document.getElementById("options");
+            const resultElement = document.getElementById("result");
+
+            const questionData = questions[currentQuestionIndex];
+
+            questionElement.textContent = questionData.question;
+            optionsElement.innerHTML = "";
+
+            // Create option buttons
+            questionData.options.forEach(option => {
+                const li = document.createElement("li");
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option.charAt(0)); // Extract 'A', 'B', etc.
+                li.appendChild(button);
+                optionsElement.appendChild(li);
+            });
+
+            resultElement.textContent = "";
+            startTimer();
+        }
+
+        // Start the timer
+        function startTimer() {
+            timer = 30;
+            document.getElementById("timer").textContent = "Time: " + timer;
+            clearInterval(timerInterval); // Clear any previous intervals
+
+            timerInterval = setInterval(() => {
+                timer--;
+                document.getElementById("timer").textContent = "Time: " + timer;
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    nextQuestion();  // Automatically go to next question if time is up
+                }
+            }, 1000);
+        }
+
+        // Check if the answer is correct
+        function checkAnswer(selectedAnswer) {
+            const correctAnswer = questions[currentQuestionIndex].correctAnswer;
+            const resultElement = document.getElementById("result");
+
+            if (selectedAnswer === correctAnswer) {
+                resultElement.textContent = "Correct!";
+                resultElement.style.color = "green";
+                score++;
+                document.getElementById("score").textContent = "Score: " + score;
+            } else {
+                resultElement.textContent = "Incorrect!";
+                resultElement.style.color = "red";
+            }
+
+            clearInterval(timerInterval);  // Stop the timer when an answer is selected
+            setTimeout(nextQuestion, 1000);  // Move to the next question after 1 second
+        }
+
+        // Move to the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                alert("Quiz Complete! Your final score is " + score);
+            }
+        }
+
+        // Initialize the quiz
+        loadQuestion();
+    </script>
+
+</body>
+</html>

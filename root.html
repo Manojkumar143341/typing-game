@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glowing Button with Link</title>
+    <style>
+        /* General reset and styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            color: #ff1493;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 2px;
+            animation: glowingLogo 1.5s infinite alternate;
+        }
+
+        @keyframes glowingLogo {
+            0% {
+                text-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493, 0 0 15px #ff1493;
+            }
+
+            50% {
+                text-shadow: 0 0 20px #ff1493, 0 0 30px #ff1493, 0 0 50px #ff1493;
+            }
+
+            100% {
+                text-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493, 0 0 15px #ff1493;
+            }
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .navbar-links a:hover {
+            color: #ff1493;
+            text-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493, 0 0 20px #ff1493;
+        }
+
+        /* Glowing Recommendation Heading Styling */
+        .recommendation-heading {
+            font-size: 36px;
+            text-align: center;
+            color: #fff;
+            text-transform: uppercase;
+            margin-top: 100px; /* To avoid overlap with navbar */
+            animation: glowingHeading 1.5s infinite alternate;
+        }
+
+        @keyframes glowingHeading {
+            0% {
+                text-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493, 0 0 15px #ff1493;
+            }
+
+            50% {
+                text-shadow: 0 0 20px #ff1493, 0 0 30px #ff1493, 0 0 50px #ff1493;
+            }
+
+            100% {
+                text-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493, 0 0 15px #ff1493;
+            }
+        }
+
+        /* Button container with spacing */
+        .button-container {
+            display: flex;
+            flex-direction: row; /* Arrange buttons in a row */
+            gap: 500px;
+            align-items: center;
+            justify-content: center;
+            max-width: 600px;
+            margin-top: 100px; /* To avoid overlap with navbar */
+        }
+
+        /* Glowing Button Styles */
+        .glowing-button {
+            color: white;
+            padding: 20px 40px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .glowing-button:hover {
+            background-color: #ffffff;
+            color: #121212;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8), 0 0 50px rgba(255, 255, 255, 0.8);
+        }
+
+        .glowing-button:focus {
+            outline: none;
+        }
+
+        /* Keyframes for glowing effect */
+        @keyframes glowing {
+            0% {
+                box-shadow: 0 0 5px #4CAF50, 0 0 10px #4CAF50, 0 0 15px #4CAF50;
+            }
+
+            50% {
+                box-shadow: 0 0 20px #4CAF50, 0 0 30px #4CAF50, 0 0 50px #4CAF50;
+            }
+
+            100% {
+                box-shadow: 0 0 5px #4CAF50, 0 0 10px #4CAF50, 0 0 15px #4CAF50;
+            }
+        }
+
+        /* Different color schemes for each button */
+        .green-button {
+            background-color: #4CAF50;
+            box-shadow: 0 0 5px #4CAF50, 0 0 10px #4CAF50, 0 0 15px #4CAF50;
+        }
+
+        .red-button {
+            background-color: #f44336;
+            box-shadow: 0 0 5px #f44336, 0 0 10px #f44336, 0 0 15px #f44336;
+        }
+
+        .blue-button {
+            background-color: #2196F3;
+            box-shadow: 0 0 5px #2196F3, 0 0 10px #2196F3, 0 0 15px #2196F3;
+        }
+
+        /* Apply glow animations */
+        .green-button:hover {
+            background-color: #45a049;
+            box-shadow: 0 0 20px #4CAF50, 0 0 30px #4CAF50, 0 0 50px #4CAF50;
+        }
+
+        .red-button:hover {
+            background-color: #d32f2f;
+            box-shadow: 0 0 20px #f44336, 0 0 30px #f44336, 0 0 50px #f44336;
+        }
+
+        .blue-button:hover {
+            background-color: #1976D2;
+            box-shadow: 0 0 20px #2196F3, 0 0 30px #2196F3, 0 0 50px #2196F3;
+        }
+
+        /* Styling for the "Games" dropdown in navbar */
+        .games-dropdown {
+            position:relative;
+        }
+
+        .games-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            background-color: #333;
+            padding: 12px;
+            border-radius: 5px;
+            width: 200px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .games-dropdown:hover .games-dropdown-content {
+            display: block;
+        }
+
+        .games-dropdown-content a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            display: block;
+            text-transform:uppercase;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .games-dropdown-content a:hover {
+            color: #ff1493;
+            text-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493, 0 0 20px #ff1493;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="#" class="logo">drama games</a>
+        <div class="navbar-links">
+            <a href="#home">HOME</a>
+            <div class="games-dropdown">
+                  <a href="#" class="games-link">COLLECTIONS</a>
+                <div class="games-dropdown-content">
+                    <a href="audio.html">START TO TYPE</a>
+                    <a href="next.html">START TO MATH</a>
+                    <a href="tictoe.html">START TO TIC-TAC-TOE</a>
+                </div>
+            </div>
+            <a href="#services">RECOMMENDED</a>
+            <a href="#contact">CONTECT</a>
+        </div>
+    </div>
+
+    <!-- Dynamic Glowing Heading for Recommendations -->
+    <h2 class="recommendation-heading">Recommended Games</h2>
+
+    <!-- Button Section (Arranged in Row) -->
+    <div class="button-container">
+        <a href="audio.html">
+            <button class="glowing-button green-button">START TO TYPE</button>
+        </a>
+        <a href="next.html">
+            <button class="glowing-button red-button">TECHNICAL QUIZ</button>
+        </a>
+        <a href="tictoe.html">
+            <button class="glowing-button blue-button">MATHS BATTLE</button>
+        </a>
+    </div>
+<br><br><br><br><br><br><br><br>
+    <!-- Footer (Optional) -->
+    <footer>
+        <p>&copy; 2024 Drama Games. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
